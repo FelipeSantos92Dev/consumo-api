@@ -1,68 +1,43 @@
+"use client";
+
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 import styles from "./filmList.module.css";
 
 const FilmList = () => {
-  const films = [
-    {
-      id: "2baf70d1-42bb-4437-b551-e5fed5a87abe",
-      title: "Castle in the Sky",
-      original_title: "天空の城ラピュタ",
-      director: "Hayao Miyazaki",
-      release_date: "1986",
-      rt_score: "95",
-      image:
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/npOnzAbLh6VOIu3naU5QaEcTepo.jpg",
-    },
-    {
-      id: "12cfb892-aac0-4c5b-94af-521852e46d6a",
-      title: "Grave of the Fireflies",
-      original_title: "火垂るの墓",
-      director: "Isao Takahata",
-      release_date: "1988",
-      rt_score: "97",
-      image:
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/qG3RYlIVpTYclR9TYIsy8p7m7AT.jpg",
-    },
-    {
-      id: "58611129-2dbc-4a81-a72f-77ddfc1b1b49",
-      title: "My Neighbor Totoro",
-      original_title: "となりのトトロ",
-      director: "Hayao Miyazaki",
-      release_date: "1988",
-      rt_score: "93",
-      image:
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/rtGDOeG9LzoerkDGZF9dnVeLppL.jpg",
-    },
-    {
-      id: "ea660b10-85c4-4ae3-8a5f-41cea3648e3e",
-      title: "Kiki's Delivery Service",
-      original_title: "魔女の宅急便",
-      director: "Hayao Miyazaki",
-      release_date: "1989",
-      rt_score: "96",
-      image:
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7nO5DUMnGUuXrA4r2h6ESOKQRrx.jpg",
-    },
-    {
-      id: "4e236f34-b981-41c3-8c65-f8c9000b94e7",
-      title: "Only Yesterday",
-      original_title: "おもひでぽろぽろ",
-      director: "Isao Takahata",
-      release_date: "1991",
-      rt_score: "100",
-      image:
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/xjJU6rwzLX7Jk8HFQfVW6H5guMC.jpg",
-    },
-    {
-      id: "ebbb6b7c-945c-41ee-a792-de0e43191bd8",
-      title: "Porco Rosso",
-      original_title: "紅の豚",
-      director: "Hayao Miyazaki",
-      release_date: "1992",
-      rt_score: "94",
-      image:
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/byKAndF6KQSDpGxp1mTr23jPbYp.jpg",
-    },
-  ];
+  const url = "https://ghibliapi.vercel.app/films"; // Link da API externa
+
+  const [films, setFilms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFilms = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(url);
+        setFilms(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.log("Erro ao buscar filmes na API");
+        setError(
+          "Não foi possível carregar os filmes. Tente novamente mais tarde! #Sorry"
+        );
+        setLoading(false);
+      }
+    };
+
+    fetchFilms();
+  }, []);
+
+  if (loading) {
+    return <div className={styles.loading}>Carregando filmes...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   return (
     <div className={styles.container}>
